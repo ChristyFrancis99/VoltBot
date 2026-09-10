@@ -2,7 +2,6 @@ import { Bell, Menu, Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useBattery } from "@/lib/battery/store";
-import { StatusDot } from "./ui";
 import {
   Popover,
   PopoverContent,
@@ -26,7 +25,6 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
   const { snapshot, user } = useBattery();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const device = snapshot.device;
 
   const results = query
     ? searchTargets.filter((t) => t.label.toLowerCase().includes(query.toLowerCase()))
@@ -34,7 +32,6 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
 
   return (
     <header className="card-surface mb-5 p-4">
-      {/* Main header: wider search on the left, all date/notifications/profile content grouped on the far right */}
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenNav}
@@ -71,7 +68,6 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
           )}
         </div>
 
-        {/* Keep the complete user/date/notification cluster on the right */}
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <span className="hidden whitespace-nowrap text-xs text-muted-foreground lg:block">
             10 September 2026, Thursday
@@ -119,30 +115,7 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-3 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <StatusDot status={device.esp32Online ? "normal" : "critical"} />
-          System {device.esp32Online ? "Online" : "Offline"}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <StatusDot status={device.esp32Online ? "normal" : "critical"} />
-          ESP32 {device.esp32Online ? "Connected" : "Disconnected"}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <StatusDot status={device.cloudSynced ? "normal" : "critical"} />
-          {device.cloudSynced ? "Cloud Synced" : "Cloud connection lost"}
-        </span>
-        <span>
-          {device.esp32Online
-            ? `Last data received: ${device.lastPacketSeconds} sec ago`
-            : "Last data received: 18:42:16"}
-        </span>
-        <span className="ml-auto rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-medium text-primary-soft-foreground">
-          Demo Data
-        </span>
-      </div>
-
-      {!device.cloudSynced && (
+      {!snapshot.device.cloudSynced && (
         <p className="mt-3 rounded-xl bg-critical-soft px-3 py-2 text-xs text-destructive">
           Cloud connection lost. Data will synchronize when connection is restored.
         </p>
