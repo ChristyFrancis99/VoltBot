@@ -1,0 +1,72 @@
+<svg width="520" height="420" viewBox="0 0 520 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="body" x1="120" y1="70" x2="400" y2="370" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="0.55" stop-color="#E5E7EB"/>
+      <stop offset="1" stop-color="#BFC5D0"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="180" y1="90" x2="350" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9B7CFF"/>
+      <stop offset="1" stop-color="#6344D8"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="180" y1="160" x2="340" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#CBD0DA"/>
+    </linearGradient>
+    <filter id="shadow" x="60" y="35" width="400" height="365" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#27213F" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <!-- Antenna -->
+  <path d="M260 72V38" stroke="#6F50E7" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="260" cy="29" r="10" fill="#8B6FF5"/>
+
+  <g filter="url(#shadow)">
+    <!-- Head -->
+    <rect x="110" y="68" width="300" height="170" rx="64" fill="url(#body)"/>
+    <rect x="130" y="88" width="260" height="130" rx="48" fill="#EEF0F4" stroke="#C7CCD5" stroke-width="3"/>
+
+    <!-- Ear modules -->
+    <rect x="94" y="124" width="25" height="58" rx="12" fill="#C5CBD5"/>
+    <rect x="401" y="124" width="25" height="58" rx="12" fill="#C5CBD5"/>
+
+    <!-- Face panel -->
+    <rect x="165" y="118" width="190" height="72" rx="28" fill="#303042"/>
+    <circle cx="222" cy="154" r="10" fill="#B7A6FF"/>
+    <circle cx="298" cy="154" r="10" fill="#B7A6FF"/>
+    <path d="M252 177C257 181 263 181 268 177" stroke="#8B6FF5" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Body -->
+    <rect x="168" y="220" width="184" height="130" rx="46" fill="url(#metal)"/>
+    <rect x="207" y="246" width="106" height="74" rx="22" fill="url(#purple)"/>
+
+    <!-- Lightning emblem -->
+    <path d="M270 257L244 288H262L251 309L282 274H264L270 257Z" fill="white"/>
+
+    <!-- Arms -->
+    <rect x="132" y="235" width="42" height="90" rx="21" fill="#D0D5DE" transform="rotate(12 132 235)"/>
+    <circle cx="151" cy="327" r="22" fill="#B9C0CB"/>
+    <rect x="346" y="235" width="42" height="90" rx="21" fill="#D0D5DE" transform="rotate(-12 346 235)"/>
+    <circle cx="369" cy="327" r="22" fill="#B9C0CB"/>
+
+    <!-- Screwdriver -->
+    <g transform="translate(365 285) rotate(-28)">
+      <rect x="0" y="0" width="24" height="78" rx="10" fill="#6F50E7"/>
+      <rect x="4" y="65" width="16" height="58" rx="6" fill="#AAB0BA"/>
+      <path d="M8 123H16L12 139L8 123Z" fill="#737985"/>
+    </g>
+
+    <!-- Feet -->
+    <rect x="195" y="333" width="52" height="42" rx="18" fill="#AEB5C0"/>
+    <rect x="274" y="333" width="52" height="42" rx="18" fill="#AEB5C0"/>
+
+    <!-- Small toolbox -->
+    <g transform="translate(75 314)">
+      <rect x="0" y="28" width="86" height="50" rx="12" fill="#D5D9E0"/>
+      <rect x="7" y="35" width="72" height="35" rx="8" fill="#7758E9"/>
+      <path d="M27 29C27 16 34 10 43 10C52 10 59 16 59 29" stroke="#6B7280" stroke-width="8" stroke-linecap="round"/>
+      <rect x="34" y="47" width="18" height="8" rx="4" fill="#EDE9FE"/>
+    </g>
+  </g>
+</svg>
