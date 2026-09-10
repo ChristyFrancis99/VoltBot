@@ -46,54 +46,40 @@ function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f3f8] p-3 sm:p-5 lg:p-7">
-      <div className="mx-auto grid min-h-[calc(100vh-1.5rem)] w-full max-w-[1280px] overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_18px_60px_rgba(47,38,79,0.10)] sm:min-h-[calc(100vh-2.5rem)] lg:grid-cols-[1.08fr_0.92fr]">
-        {/* Left side: one visual image only */}
-        <section className="relative hidden min-h-[720px] overflow-hidden bg-[#e5ddf3] lg:block">
+    <main className="h-screen w-screen overflow-hidden bg-[#f5f3f8]">
+      <div className="grid h-full w-full overflow-hidden bg-card lg:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.75fr)]">
+        {/* Left visual panel: wider than the sign-in panel */}
+        <section className="relative hidden h-full min-w-0 overflow-hidden bg-[#e5ddf3] lg:block">
           <img
             src={loginPage}
-            alt="VoltBot mechanic robot"
-            className="absolute inset-0 h-full w-full object-cover"
+            alt="VoltBot EV battery mechanic illustration"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
         </section>
 
-        {/* Right sign-in panel */}
-        <section className="flex min-h-[720px] items-center justify-center bg-white px-5 py-10 sm:px-10 lg:px-12 xl:px-16">
-          <div className="w-full max-w-[420px]">
-            <div className="mb-8 lg:hidden">
-              <div className="flex items-center gap-3">
-                <div className="grid size-11 place-items-center rounded-xl bg-primary/10">
-                  <Zap className="size-5 text-primary" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-extrabold tracking-tight text-foreground">VoltBot</h1>
-                  <p className="text-xs font-medium text-muted-foreground">Smart EV Battery Monitoring</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <div className="mb-4 grid size-12 place-items-center rounded-2xl bg-primary-soft text-primary">
-                <Zap className="size-6 fill-current" />
+        {/* Right sign-in panel: designed to fit a single desktop viewport */}
+        <section className="flex h-full min-w-0 items-center justify-center overflow-hidden bg-white px-7 py-5 sm:px-10 lg:px-10 xl:px-14">
+          <div className="w-full max-w-[390px]">
+            <div className="mb-5">
+              <div className="mb-3 grid size-11 place-items-center rounded-2xl bg-primary-soft text-primary">
+                <Zap className="size-5 fill-current" />
               </div>
               <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-1.5 text-sm text-muted-foreground">
                 Sign in to access your EV battery monitoring dashboard.
               </p>
             </div>
 
             {error && (
-              <div className="mb-5 flex items-start gap-2.5 rounded-xl bg-critical-soft p-3.5 text-xs text-destructive">
+              <div className="mb-4 flex items-start gap-2.5 rounded-xl bg-critical-soft p-3 text-xs text-destructive">
                 <AlertCircle className="mt-0.5 size-4 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <Label htmlFor="username" className="text-xs font-semibold">
-                  Username or Email
-                </Label>
+                <Label htmlFor="username" className="text-xs font-semibold">Username or Email</Label>
                 <Input
                   id="username"
                   type="text"
@@ -101,15 +87,13 @@ function LoginPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your username"
                   required
-                  className="mt-2 h-11 rounded-xl border-border bg-background px-3.5"
+                  className="mt-1.5 h-11 rounded-xl border-border bg-background px-3.5"
                 />
               </div>
 
               <div>
-                <Label htmlFor="password" className="text-xs font-semibold">
-                  Password
-                </Label>
-                <div className="relative mt-2">
+                <Label htmlFor="password" className="text-xs font-semibold">Password</Label>
+                <div className="relative mt-1.5">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -137,11 +121,8 @@ function LoginPage() {
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(!!checked)}
                   />
-                  <label htmlFor="remember" className="cursor-pointer text-xs text-muted-foreground">
-                    Remember me
-                  </label>
+                  <label htmlFor="remember" className="cursor-pointer text-xs text-muted-foreground">Remember me</label>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => alert("Demo credentials are Username: admin | Password: admin123")}
@@ -151,22 +132,18 @@ function LoginPage() {
                 </button>
               </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="h-11 w-full rounded-xl font-semibold shadow-sm"
-              >
+              <Button type="submit" disabled={loading} className="h-11 w-full rounded-xl font-semibold shadow-sm">
                 {loading ? "Signing in…" : "Sign In"}
               </Button>
             </form>
 
-            <div className="my-7 flex items-center gap-3">
+            <div className="my-5 flex items-center gap-3">
               <div className="h-px flex-1 bg-border" />
               <span className="text-[11px] text-muted-foreground">Demo access</span>
               <div className="h-px flex-1 bg-border" />
             </div>
 
-            <div className="rounded-2xl border border-primary/10 bg-primary-soft/40 p-4">
+            <div className="rounded-2xl border border-primary/10 bg-primary-soft/40 p-3.5">
               <div className="flex items-start gap-3">
                 <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
                   <ShieldCheck className="size-4" />
@@ -182,7 +159,7 @@ function LoginPage() {
               </div>
             </div>
 
-            <p className="mt-8 text-center text-[11px] text-muted-foreground">
+            <p className="mt-4 text-center text-[10px] text-muted-foreground">
               VoltBot • Smart EV Battery Health & Early Fault Detection
             </p>
           </div>
