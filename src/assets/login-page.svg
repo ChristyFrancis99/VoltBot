@@ -1,0 +1,79 @@
+<svg width="900" height="900" viewBox="0 0 900 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="820" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEE9FA"/>
+      <stop offset="1" stop-color="#D8CCF0"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="310" y1="170" x2="650" y2="700" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9B82F4"/>
+      <stop offset="1" stop-color="#6743D8"/>
+    </linearGradient>
+    <filter id="shadow" x="190" y="80" width="560" height="760" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#4A347D" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="900" height="900" rx="40" fill="url(#bg)"/>
+  <circle cx="120" cy="120" r="90" fill="#B99FE8" fill-opacity="0.16"/>
+  <circle cx="790" cy="760" r="140" fill="#FFFFFF" fill-opacity="0.25"/>
+  <path d="M65 690C210 615 292 655 385 618C495 575 595 620 835 510" stroke="#7658D9" stroke-opacity="0.12" stroke-width="3" stroke-linecap="round"/>
+  <path d="M92 725C230 657 320 690 405 652C515 604 622 651 820 556" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"/>
+
+  <g filter="url(#shadow)">
+    <!-- toolbox -->
+    <rect x="600" y="690" width="190" height="105" rx="22" fill="url(#purple)"/>
+    <rect x="620" y="665" width="150" height="48" rx="18" fill="#8265E3"/>
+    <rect x="669" y="650" width="54" height="28" rx="10" stroke="#4F3A99" stroke-width="12"/>
+    <rect x="678" y="716" width="35" height="35" rx="7" fill="#F4F1FC" fill-opacity="0.85"/>
+
+    <!-- legs -->
+    <path d="M410 650V760C410 789 431 806 460 806H482C502 806 516 791 516 771V690" fill="#F8F8FC"/>
+    <path d="M525 690V771C525 791 540 806 560 806H582C611 806 632 789 632 760V650" fill="#F8F8FC"/>
+
+    <!-- body -->
+    <rect x="360" y="485" width="300" height="230" rx="92" fill="#F8F8FC"/>
+    <rect x="380" y="505" width="260" height="190" rx="78" fill="#EEEFF7"/>
+
+    <!-- tool belt -->
+    <rect x="382" y="625" width="256" height="30" rx="15" fill="#4A4666"/>
+    <rect x="414" y="607" width="54" height="68" rx="12" fill="#514D70"/>
+    <rect x="550" y="607" width="54" height="68" rx="12" fill="#514D70"/>
+    <rect x="492" y="616" width="55" height="47" rx="9" fill="#A28BEE"/>
+    <rect x="504" y="627" width="31" height="25" rx="5" fill="#EAE6F9"/>
+
+    <!-- head -->
+    <rect x="270" y="205" width="480" height="350" rx="125" fill="#F8F8FC"/>
+    <rect x="295" y="230" width="430" height="300" rx="105" fill="#E9EAF3"/>
+    <rect x="345" y="300" width="330" height="150" rx="60" fill="#3D3A5C"/>
+    <path d="M405 369C420 348 450 348 465 369" stroke="#F7F4FF" stroke-width="15" stroke-linecap="round"/>
+    <path d="M555 369C570 348 600 348 615 369" stroke="#F7F4FF" stroke-width="15" stroke-linecap="round"/>
+
+    <!-- cap -->
+    <path d="M310 258C330 150 405 102 512 102C620 102 692 153 710 258C651 225 580 211 510 211C440 211 370 226 310 258Z" fill="url(#purple)"/>
+    <path d="M303 255C383 224 624 224 717 257C719 278 705 292 686 286C580 257 423 257 322 287C304 292 294 276 303 255Z" fill="#7B5BDE"/>
+    <!-- wrench -->
+    <path d="M503 155L544 196" stroke="#F8F8FC" stroke-width="16" stroke-linecap="round"/>
+    <path d="M548 151C529 132 500 132 484 151L504 171L523 152L548 177C566 162 566 146 548 151Z" fill="#F8F8FC"/>
+
+    <!-- side ears -->
+    <rect x="245" y="340" width="45" height="100" rx="22" fill="#8165E3"/>
+    <rect x="730" y="340" width="45" height="100" rx="22" fill="#8165E3"/>
+
+    <!-- left arm + screwdriver -->
+    <path d="M365 525C320 535 287 558 278 606C272 636 292 656 315 649C342 640 354 600 388 584" fill="#F8F8FC"/>
+    <rect x="250" y="510" width="38" height="170" rx="19" transform="rotate(-12 250 510)" fill="#7C5CDE"/>
+    <path d="M274 514L258 384" stroke="#68657D" stroke-width="13" stroke-linecap="round"/>
+    <path d="M250 387L264 355L280 387L265 402Z" fill="#55516E"/>
+
+    <!-- right arm -->
+    <path d="M655 525C700 535 733 558 742 606C748 636 728 656 705 649C678 640 666 600 632 584" fill="#F8F8FC"/>
+
+    <!-- chest bolt -->
+    <path d="M505 535L478 584H507L493 617L544 556H515L530 535H505Z" fill="#7656D9"/>
+  </g>
+
+  <!-- small diagnostic accents -->
+  <rect x="118" y="470" width="95" height="54" rx="18" fill="#FFFFFF" fill-opacity="0.45"/>
+  <path d="M140 497H158L166 484L177 510L186 495H199" stroke="#7656D9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="745" cy="170" r="7" fill="#7656D9" fill-opacity="0.45"/>
+  <circle cx="780" cy="205" r="4" fill="#7656D9" fill-opacity="0.3"/>
+</svg>
