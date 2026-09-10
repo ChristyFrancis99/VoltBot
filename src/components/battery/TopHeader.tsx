@@ -34,16 +34,17 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
 
   return (
     <header className="card-surface mb-5 p-4">
-      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+      {/* Main header: wider search on the left, all date/notifications/profile content grouped on the far right */}
+      <div className="flex items-center gap-3">
         <button
           onClick={onOpenNav}
           aria-label="Open navigation"
-          className="grid size-9 place-items-center rounded-xl border border-border text-muted-foreground lg:hidden"
+          className="grid size-9 shrink-0 place-items-center rounded-xl border border-border text-muted-foreground lg:hidden"
         >
           <Menu className="size-4" />
         </button>
 
-        <div className="relative min-w-0">
+        <div className="relative w-full max-w-[560px] min-w-0">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
@@ -70,10 +71,12 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
           )}
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="hidden text-xs text-muted-foreground xl:block">
+        {/* Keep the complete user/date/notification cluster on the right */}
+        <div className="ml-auto flex shrink-0 items-center gap-3">
+          <span className="hidden whitespace-nowrap text-xs text-muted-foreground lg:block">
             10 September 2026, Thursday
           </span>
+
           <Popover>
             <PopoverTrigger asChild>
               <button
@@ -81,7 +84,9 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
                 className="relative grid size-9 place-items-center rounded-xl border border-border text-muted-foreground hover:bg-muted"
               >
                 <Bell className="size-4" />
-                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
+                <span className="absolute -right-0.5 -top-0.5 grid min-w-4.5 h-4.5 place-items-center rounded-full border-2 border-background bg-destructive px-1 text-[9px] font-bold leading-none text-destructive-foreground">
+                  {snapshot.notifications.length}
+                </span>
               </button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-80 p-2">
@@ -103,7 +108,7 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
               CF
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-sm font-medium">
+              <span className="block max-w-[150px] truncate text-sm font-medium">
                 {user?.name ?? "Christy Francis"}
               </span>
               <span className="block truncate text-[11px] text-muted-foreground">
