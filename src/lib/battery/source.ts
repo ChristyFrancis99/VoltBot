@@ -6,7 +6,8 @@ import type { BatterySnapshot, OperatingMode } from "./types";
  * the ESP32 gateway) that returns the same `BatterySnapshot` shape.
  */
 
-const cellVoltages = [4.02, 4.01, 4.03, 4.0, 4.01, 3.95, 4.02, 4.01];
+// Cell 06 is intentionally slightly lower so 4.03 V - 3.978 V = 52 mV.
+const cellVoltages = [4.02, 4.01, 4.03, 4.0, 4.01, 3.978, 4.02, 4.01];
 
 export const trendData = [
   { cycle: "Cycle 1", health: 66, temperature: 31.2, voltage: 47.4, current: 7.2 },
@@ -19,7 +20,6 @@ export const trendData = [
 ];
 
 export function createDemoSnapshot(mode: OperatingMode, tick: number): BatterySnapshot {
-  // tiny deterministic jitter so live values move without looking random
   const j = (base: number, amp: number, offset = 0) =>
     Number((base + Math.sin((tick + offset) / 3) * amp).toFixed(2));
 
@@ -35,12 +35,7 @@ export function createDemoSnapshot(mode: OperatingMode, tick: number): BatterySn
     soc: { value: 78, unit: "%", status: "normal", available: true },
     healthScore: { value: 72, unit: "/ 100", status: "warning", available: true },
     packVoltage: { value: packVoltage, unit: "V", status: "normal", available: true },
-    current: {
-      value: Number(current.toFixed(1)),
-      unit: "A",
-      status: mode === "idle" ? "info" : "normal",
-      available: true,
-    },
+    current: { value: Number(current.toFixed(1)), unit: "A", status: mode === "idle" ? "info" : "normal", available: true },
     temperature: { value: temperature, unit: "°C", status: "warning", available: true },
     cellImbalance: { value: 52, unit: "mV", status: "monitor", available: true },
     cells: cellVoltages.map((v, i) => ({
@@ -51,27 +46,15 @@ export function createDemoSnapshot(mode: OperatingMode, tick: number): BatterySn
     anomalyScore: 0.72,
     riskLevel: "Moderate",
     conditionStatus: "warning",
-    conditionDescription:
-      "Battery is operating normally, but cell imbalance is increasing.",
+    conditionDescription: "Battery is operating normally, but cell imbalance is increasing.",
     analysis: [
       { label: "Pack voltage", verdict: "Normal", status: "normal" },
-      {
-        label: "Cell imbalance",
-        verdict: "Increasing",
-        status: "warning",
-        detail: "32 mV → 52 mV",
-      },
-      {
-        label: "Temperature",
-        verdict: "Above baseline",
-        status: "warning",
-        detail: "Normal: 29–34 °C · Current: 36.8 °C",
-      },
+      { label: "Cell imbalance", verdict: "Increasing", status: "warning", detail: "32 mV → 52 mV" },
+      { label: "Temperature", verdict: "Above baseline", status: "warning", detail: "Normal: 29–34 °C · Current: 36.8 °C" },
       { label: "Current pattern", verdict: "Normal", status: "normal" },
       { label: "Charging behaviour", verdict: "Normal", status: "normal" },
     ],
-    recommendedAction:
-      "Continue monitoring. Inspect the battery if cell imbalance continues to increase.",
+    recommendedAction: "Continue monitoring. Inspect the battery if cell imbalance continues to increase.",
     healthBreakdown: [
       { label: "Temperature", value: 82 },
       { label: "Cell Balance", value: 65 },
@@ -150,78 +133,18 @@ export function createDemoSnapshot(mode: OperatingMode, tick: number): BatterySn
     ],
     trends: trendData,
     alerts: [
-      {
-        id: "a1",
-        severity: "warning",
-        title: "Cell imbalance increasing",
-        timestamp: "10 Sep 2026 · 18:40",
-        description: "Cell difference increased from 32 mV to 52 mV over 3 cycles.",
-      },
-      {
-        id: "a2",
-        severity: "monitor",
-        title: "Temperature above baseline",
-        timestamp: "10 Sep 2026 · 17:52",
-        description: "Pack temperature reached 36.8 °C, baseline range is 29–34 °C.",
-      },
-      {
-        id: "a3",
-        severity: "resolved",
-        title: "Charging anomaly resolved",
-        timestamp: "10 Sep 2026 · 14:20",
-        description: "Charge current returned to the expected profile.",
-      },
-      {
-        id: "a4",
-        severity: "information",
-        title: "Behaviour profile updated",
-        timestamp: "09 Sep 2026 · 21:05",
-        description: "Baseline recalculated using the last 20 monitoring cycles.",
-      },
-      {
-        id: "a5",
-        severity: "resolved",
-        title: "Sensor packet loss recovered",
-        timestamp: "08 Sep 2026 · 11:12",
-        description: "ESP32 reconnected after a 42 second Wi-Fi dropout.",
-      },
+      { id: "a1", severity: "warning", title: "Cell imbalance increasing", timestamp: "10 Sep 2026 · 18:40", description: "Cell difference increased from 32 mV to 52 mV over 3 cycles." },
+      { id: "a2", severity: "monitor", title: "Temperature above baseline", timestamp: "10 Sep 2026 · 17:52", description: "Pack temperature reached 36.8 °C, baseline range is 29–34 °C." },
+      { id: "a3", severity: "resolved", title: "Charging anomaly resolved", timestamp: "10 Sep 2026 · 14:20", description: "Charge current returned to the expected profile." },
+      { id: "a4", severity: "information", title: "Behaviour profile updated", timestamp: "09 Sep 2026 · 21:05", description: "Baseline recalculated using the last 20 monitoring cycles." },
+      { id: "a5", severity: "resolved", title: "Sensor packet loss recovered", timestamp: "08 Sep 2026 · 11:12", description: "ESP32 reconnected after a 42 second Wi-Fi dropout." },
     ],
     notifications: [
-      {
-        id: "n1",
-        icon: "bell",
-        title: "Cell imbalance detected",
-        timestamp: "10 Sep · 18:40",
-        description: "Cell difference increased to 52 mV.",
-      },
-      {
-        id: "n2",
-        icon: "thermometer",
-        title: "Temperature above baseline",
-        timestamp: "10 Sep · 17:52",
-        description: "Battery temperature reached 36.8 °C.",
-      },
-      {
-        id: "n3",
-        icon: "battery",
-        title: "Battery health updated",
-        timestamp: "10 Sep · 16:30",
-        description: "Health score updated to 72/100.",
-      },
-      {
-        id: "n4",
-        icon: "bolt",
-        title: "Charging completed",
-        timestamp: "10 Sep · 14:15",
-        description: "Battery reached full charge.",
-      },
-      {
-        id: "n5",
-        icon: "wrench",
-        title: "Service reminder",
-        timestamp: "09 Sep · 10:00",
-        description: "Next battery inspection is due soon.",
-      },
+      { id: "n1", icon: "bell", title: "Cell imbalance detected", timestamp: "10 Sep · 18:40", description: "Cell difference increased to 52 mV." },
+      { id: "n2", icon: "thermometer", title: "Temperature above baseline", timestamp: "10 Sep · 17:52", description: "Battery temperature reached 36.8 °C." },
+      { id: "n3", icon: "battery", title: "Battery health updated", timestamp: "10 Sep · 16:30", description: "Health score updated to 72/100." },
+      { id: "n4", icon: "bolt", title: "Charging completed", timestamp: "10 Sep · 14:15", description: "Battery reached full charge." },
+      { id: "n5", icon: "wrench", title: "Service reminder", timestamp: "09 Sep · 10:00", description: "Next battery inspection is due soon." },
     ],
     events: [
       { time: "18:42", label: "Sensor data received", icon: "signal" },
@@ -254,24 +177,9 @@ export function createDemoSnapshot(mode: OperatingMode, tick: number): BatterySn
       nextService: "18 Nov 2026",
       daysRemaining: 68,
       history: [
-        {
-          date: "18 Aug 2026",
-          type: "Routine inspection",
-          technician: "C. Francis",
-          notes: "Cell balancing check, connector torque verified.",
-        },
-        {
-          date: "20 Jun 2026",
-          type: "Thermal check",
-          technician: "R. Menon",
-          notes: "Thermal pad replaced on module 2.",
-        },
-        {
-          date: "14 Apr 2026",
-          type: "Firmware update",
-          technician: "C. Francis",
-          notes: "ESP32 firmware updated to v1.2.4.",
-        },
+        { date: "18 Aug 2026", type: "Routine inspection", technician: "C. Francis", notes: "Cell balancing check, connector torque verified." },
+        { date: "20 Jun 2026", type: "Thermal check", technician: "R. Menon", notes: "Thermal pad replaced on module 2." },
+        { date: "14 Apr 2026", type: "Firmware update", technician: "C. Francis", notes: "ESP32 firmware updated to v1.2.4." },
       ],
     },
     charging: { progress: 78, current: 6.8, voltage: 52.1, estimatedMinutes: 42 },
