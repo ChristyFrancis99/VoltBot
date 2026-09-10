@@ -1,14 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Zap, AlertCircle, ShieldCheck, BatteryCharging, Activity } from "lucide-react";
+import { Eye, EyeOff, Zap, AlertCircle, ShieldCheck } from "lucide-react";
 import { useBattery } from "@/lib/battery/store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-
-import voltbotLogo from "@/assets/voltbot-logo.jpg";
-import mechbot from "@/assets/mech-bot.png";
+import loginPage from "@/assets/login-page.svg";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -50,77 +48,13 @@ function LoginPage() {
   return (
     <main className="min-h-screen bg-[#f5f3f8] p-3 sm:p-5 lg:p-7">
       <div className="mx-auto grid min-h-[calc(100vh-1.5rem)] w-full max-w-[1280px] overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_18px_60px_rgba(47,38,79,0.10)] sm:min-h-[calc(100vh-2.5rem)] lg:grid-cols-[1.08fr_0.92fr]">
-        {/* Left visual / product panel */}
-        <section className="relative hidden min-h-[720px] overflow-hidden bg-gradient-to-br from-[#eee8fb] via-[#e4d9f5] to-[#d8c9ee] lg:block">
-          <div className="absolute -left-20 -top-20 size-72 rounded-full bg-primary/10 blur-2xl" />
-          <div className="absolute -bottom-24 -right-20 size-80 rounded-full bg-white/35 blur-3xl" />
-
-          {/* subtle monitoring / circuit decoration */}
-          <div className="absolute left-10 top-28 h-px w-44 bg-primary/20" />
-          <div className="absolute left-10 top-28 size-2 rounded-full bg-primary/40" />
-          <div className="absolute right-16 top-36 flex items-center gap-2 rounded-full border border-white/60 bg-white/45 px-3 py-1.5 text-[11px] font-medium text-primary shadow-sm backdrop-blur-sm">
-            <Activity className="size-3.5" /> Live diagnostics
-          </div>
-
-          <div className="relative z-10 flex h-full flex-col px-10 py-10 xl:px-14 xl:py-12">
-            <div className="flex items-center gap-3">
-              <div className="grid size-11 place-items-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/5">
-                <img src={voltbotLogo} alt="VoltBot" className="size-full object-cover" />
-              </div>
-              <div>
-                <div className="text-xl font-extrabold tracking-tight text-[#29223d]">VoltBot</div>
-                <div className="text-xs font-medium text-[#6f6385]">Smart EV Battery Monitoring</div>
-              </div>
-            </div>
-
-            <div className="mt-10 max-w-md">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/65 px-3 py-1.5 text-xs font-semibold text-primary shadow-sm backdrop-blur-sm">
-                <Zap className="size-3.5 fill-current" />
-                Intelligent battery care
-              </div>
-              <h2 className="mt-5 text-3xl font-bold leading-tight tracking-tight text-[#29223d] xl:text-4xl">
-                Your EV battery's
-                <span className="block text-primary">smart mechanic.</span>
-              </h2>
-              <p className="mt-3 max-w-sm text-sm leading-6 text-[#6f6385]">
-                Monitor battery health, understand abnormal behaviour, and catch early warning signs before they become bigger problems.
-              </p>
-            </div>
-
-            {/* Mechanic robot visual */}
-            <div className="relative mt-auto flex min-h-[390px] items-end justify-center">
-              <div className="absolute bottom-10 h-28 w-72 rounded-full bg-primary/10 blur-2xl" />
-              <img
-                src={mechbot}
-                alt="VoltBot mechanic robot"
-                className="relative z-10 max-h-[470px] w-auto max-w-[86%] object-contain object-bottom drop-shadow-[0_22px_24px_rgba(59,42,104,0.18)]"
-              />
-
-              <div className="absolute bottom-14 left-4 rounded-2xl border border-white/70 bg-white/65 px-3.5 py-3 shadow-sm backdrop-blur-md xl:left-8">
-                <div className="flex items-center gap-2">
-                  <span className="grid size-7 place-items-center rounded-lg bg-primary text-primary-foreground">
-                    <BatteryCharging className="size-4" />
-                  </span>
-                  <div>
-                    <p className="text-[10px] text-muted-foreground">Battery monitoring</p>
-                    <p className="text-xs font-semibold text-foreground">Health & fault detection</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-28 right-2 rounded-2xl border border-white/70 bg-white/65 px-3.5 py-3 shadow-sm backdrop-blur-md xl:right-8">
-                <p className="text-[10px] text-muted-foreground">System status</p>
-                <div className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                  <span className="size-2 rounded-full bg-success" />
-                  Ready to monitor
-                </div>
-              </div>
-            </div>
-
-            <p className="mt-2 text-xs font-medium tracking-wide text-[#766b8b]">
-              Monitor. Analyze. Detect. Protect.
-            </p>
-          </div>
+        {/* Left side: one visual image only */}
+        <section className="relative hidden min-h-[720px] overflow-hidden bg-[#e5ddf3] lg:block">
+          <img
+            src={loginPage}
+            alt="VoltBot mechanic robot"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         </section>
 
         {/* Right sign-in panel */}
@@ -128,8 +62,8 @@ function LoginPage() {
           <div className="w-full max-w-[420px]">
             <div className="mb-8 lg:hidden">
               <div className="flex items-center gap-3">
-                <div className="grid size-11 place-items-center overflow-hidden rounded-xl bg-primary/10">
-                  <img src={voltbotLogo} alt="VoltBot" className="size-full object-cover" />
+                <div className="grid size-11 place-items-center rounded-xl bg-primary/10">
+                  <Zap className="size-5 text-primary" />
                 </div>
                 <div>
                   <h1 className="text-xl font-extrabold tracking-tight text-foreground">VoltBot</h1>
