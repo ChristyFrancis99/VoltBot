@@ -7,7 +7,6 @@ import {
   Thermometer,
   ShieldAlert,
   AlertTriangle,
-  CheckCircle2,
   Wrench,
   Wifi,
   Cloud,
@@ -19,7 +18,7 @@ import { ServiceCalendar, ImportantNotifications } from "@/components/battery/Ri
 import { Panel, StatusChip, HealthRing, InfoValue } from "@/components/battery/ui";
 import mechbot from "@/assets/mech-bot.png";
 
-export const Route = createFileRoute("/_shell/dashboard")({component: DashboardPage,});
+export const Route = createFileRoute("/_shell/dashboard")({ component: DashboardPage });
 
 function DashboardPage() {
   const { snapshot, user } = useBattery();
@@ -60,21 +59,13 @@ function DashboardPage() {
             </div>
           </div>
 
-          {/* Transparent mascot: fills the card surface vertically, with no image background */}
+          {/* Single transparent mascot: fills the card surface vertically */}
           <div className="pointer-events-none absolute inset-y-0 right-2 flex w-[32%] items-end justify-center sm:right-4 sm:w-[30%] lg:w-[27%]">
             <img
               src={mechbot}
               alt="VoltBot mechanic robot"
               className="h-[96%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_10px_14px_rgba(49,43,79,0.14)]"
             />
-            {/* Small EV Battery / Scooter Illustration */}
-            <div className="relative z-10 flex shrink-0 items-center justify-center rounded-2xl bg-primary-soft/40 p-3 sm:p-4">
-              <img
-                src={mechbot}
-                alt="EV Battery Pack Illustration"
-                className="h-20 w-auto object-contain drop-shadow-sm"
-              />
-            </div>
           </div>
         </section>
 
