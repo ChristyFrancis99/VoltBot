@@ -19,7 +19,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useBattery } from "@/lib/battery/store";
 import logoHead from "@/assets/logo-head.png";
-import voltBotLogo from "@/assets/volt-bot.png";
+import voltBotLogo from "@/assets/VoltBot-name.png";
 
 export const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -61,7 +61,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         >
           <img src={logoHead} alt="VoltBot logo" className="h-10 w-10 shrink-0 object-contain" />
           {expanded && (
-            <img src={voltBotLogo} alt="VoltBot" className="h-9 w-auto max-w-[128px] object-contain" />
+            <img src={voltBotLogo} alt="VoltBot" className="h-6 w-auto max-w-[120px] object-contain" />
           )}
         </button>
 

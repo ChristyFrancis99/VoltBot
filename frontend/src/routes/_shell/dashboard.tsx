@@ -49,7 +49,7 @@ function DashboardPage() {
             </div>
           </div>
           <div className="pointer-events-none absolute inset-y-0 right-2 flex w-[32%] items-end justify-center sm:right-4 sm:w-[30%] lg:w-[27%]">
-            <img src={mechbot} alt="VoltBot mechanic robot" className="h-[96%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_10px_14px_rgba(49,43,79,0.14)]" />
+            <img src={mechbot} alt="VoltBot mechanic robot" className="h-[100%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_10px_14px_rgba(49,43,79,0.14)]" />
           </div>
         </section>
 
