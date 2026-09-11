@@ -22,7 +22,7 @@ function formatCurrentDate() {
 }
 
 export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
-  const { snapshot, user } = useBattery();
+  const { snapshot } = useBattery();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const results = useMemo(() => query ? searchTargets.filter((target) => target.label.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [], [query]);
@@ -35,7 +35,6 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const initials = (user?.name ?? "Christy Francis").split(" ").map((part) => part[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
   const connectionState = snapshot.device.esp32Online && snapshot.device.cloudSynced;
 
   return (
@@ -63,8 +62,6 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
               <ul className="max-h-80 overflow-y-auto">{snapshot.notifications.map((notification) => <li key={notification.id} className="rounded-lg px-2 py-2.5 hover:bg-muted"><p className="text-sm font-medium">{notification.title}</p><p className="text-xs leading-relaxed text-muted-foreground">{notification.description}</p><p className="mt-0.5 text-[11px] text-muted-foreground">{notification.timestamp}</p></li>)}</ul>
             </PopoverContent>
           </Popover>
-
-          <div className="hidden items-center gap-2.5 sm:flex"><span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-sm font-semibold text-primary-soft-foreground">{initials}</span><span className="min-w-0"><span className="block max-w-[150px] truncate text-sm font-medium">{user?.name ?? "Christy Francis"}</span><span className="block truncate text-[11px] text-muted-foreground">{user?.role ?? "Technician / Admin"}</span></span></div>
         </div>
       </div>
 
