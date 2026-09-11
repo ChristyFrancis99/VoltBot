@@ -33,7 +33,6 @@ interface BatteryContextValue {
 const BatteryContext = createContext<BatteryContextValue | null>(null);
 
 const LAST_TEMP = { value: 36.2, at: "18:41" };
-const LAST_PACKET_AT = "18:42:16";
 
 export function BatteryProvider({ children }: { children: ReactNode }) {
   const [tick, setTick] = useState(0);
@@ -49,7 +48,13 @@ export function BatteryProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stored = window.localStorage.getItem(AUTH_KEY);
-    if (stored) setUser(JSON.parse(stored));
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch {
+        window.localStorage.removeItem(AUTH_KEY);
+      }
+    }
     setAuthReady(true);
   }, []);
 
@@ -83,11 +88,14 @@ export function BatteryProvider({ children }: { children: ReactNode }) {
   );
 
   const snapshot = useMemo(() => {
-    const base = createDemoSnapshot(simulation.mode, tick);
-    const offline = !simulation.esp32Online;
+    const base = createDemoSnapshot(simulation.mode, tick, {
+      esp32Online: simulation.esp32Online,
+      cloudOnline: simulation.cloudOnline,
+    });
 
-    if (!simulation.temperatureSensorOnline || offline) {
+    if (!simulation.temperatureSensorOnline) {
       base.temperature = {
+        ...base.temperature,
         value: null,
         unit: "°C",
         status: "critical",
@@ -95,33 +103,11 @@ export function BatteryProvider({ children }: { children: ReactNode }) {
         lastKnown: LAST_TEMP.value,
         lastKnownAt: LAST_TEMP.at,
       };
-    }
-
-    if (offline) {
-      // Never keep showing live values from a disconnected device.
-      for (const key of ["soc", "packVoltage", "current", "cellImbalance"] as const) {
-        base[key] = {
-          ...base[key],
-          lastKnown: base[key].value ?? undefined,
-          lastKnownAt: LAST_PACKET_AT,
-          value: null,
-          available: false,
-          status: "critical",
-        };
-      }
-      base.cells = base.cells.map((c) => ({ ...c, voltage: null, status: "critical" }));
-      base.device.sensors = base.device.sensors.map((s) => ({ ...s, online: false }));
-    } else if (!simulation.temperatureSensorOnline) {
-      base.device.sensors = base.device.sensors.map((s) =>
-        s.key === "temperature" ? { ...s, online: false } : s,
+      base.device.sensors = base.device.sensors.map((sensor) =>
+        sensor.key === "temperature" ? { ...sensor, online: false } : sensor,
       );
     }
 
-    base.device.esp32Online = simulation.esp32Online;
-    base.device.wifiConnected = simulation.esp32Online;
-    base.device.cloudSynced = simulation.cloudOnline && simulation.esp32Online;
-    base.device.lastPacketSeconds = offline ? 0 : 2;
-    base.lastUpdatedSeconds = offline ? 0 : 2;
     return base;
   }, [simulation, tick]);
 
@@ -138,5 +124,3 @@ export function useBattery() {
   if (!ctx) throw new Error("useBattery must be used inside BatteryProvider");
   return ctx;
 }
-
-export const LAST_PACKET_TIMESTAMP = LAST_PACKET_AT;
