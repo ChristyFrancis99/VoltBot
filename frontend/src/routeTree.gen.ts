@@ -18,7 +18,6 @@ import { Route as ShellDashboardRouteImport } from './routes/_shell/dashboard'
 import { Route as ShellFaultDetectionRouteImport } from './routes/_shell/fault-detection'
 import { Route as ShellLiveMonitoringRouteImport } from './routes/_shell/live-monitoring'
 import { Route as ShellServiceRouteImport } from './routes/_shell/service'
-import { Route as ShellSettingsRouteImport } from './routes/_shell/settings'
 import { Route as ShellTechnicianRouteImport } from './routes/_shell/technician'
 import { Route as ShellTrendsRouteImport } from './routes/_shell/trends'
 
@@ -66,11 +65,6 @@ const ShellServiceRoute = ShellServiceRouteImport.update({
   path: '/service',
   getParentRoute: () => ShellRoute,
 } as any)
-const ShellSettingsRoute = ShellSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => ShellRoute,
-} as any)
 const ShellTechnicianRoute = ShellTechnicianRouteImport.update({
   id: '/technician',
   path: '/technician',
@@ -91,7 +85,6 @@ export interface FileRoutesByFullPath {
   '/fault-detection': typeof ShellFaultDetectionRoute
   '/live-monitoring': typeof ShellLiveMonitoringRoute
   '/service': typeof ShellServiceRoute
-  '/settings': typeof ShellSettingsRoute
   '/technician': typeof ShellTechnicianRoute
   '/trends': typeof ShellTrendsRoute
 }
@@ -104,7 +97,6 @@ export interface FileRoutesByTo {
   '/fault-detection': typeof ShellFaultDetectionRoute
   '/live-monitoring': typeof ShellLiveMonitoringRoute
   '/service': typeof ShellServiceRoute
-  '/settings': typeof ShellSettingsRoute
   '/technician': typeof ShellTechnicianRoute
   '/trends': typeof ShellTrendsRoute
 }
@@ -119,7 +111,6 @@ export interface FileRoutesById {
   '/_shell/fault-detection': typeof ShellFaultDetectionRoute
   '/_shell/live-monitoring': typeof ShellLiveMonitoringRoute
   '/_shell/service': typeof ShellServiceRoute
-  '/_shell/settings': typeof ShellSettingsRoute
   '/_shell/technician': typeof ShellTechnicianRoute
   '/_shell/trends': typeof ShellTrendsRoute
 }
@@ -134,7 +125,6 @@ export interface FileRouteTypes {
     | '/fault-detection'
     | '/live-monitoring'
     | '/service'
-    | '/settings'
     | '/technician'
     | '/trends'
   fileRoutesByTo: FileRoutesByTo
@@ -147,7 +137,6 @@ export interface FileRouteTypes {
     | '/fault-detection'
     | '/live-monitoring'
     | '/service'
-    | '/settings'
     | '/technician'
     | '/trends'
   id:
@@ -161,7 +150,6 @@ export interface FileRouteTypes {
     | '/_shell/fault-detection'
     | '/_shell/live-monitoring'
     | '/_shell/service'
-    | '/_shell/settings'
     | '/_shell/technician'
     | '/_shell/trends'
   fileRoutesById: FileRoutesById
@@ -237,13 +225,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellServiceRouteImport
       parentRoute: typeof ShellRoute
     }
-    '/_shell/settings': {
-      id: '/_shell/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof ShellSettingsRouteImport
-      parentRoute: typeof ShellRoute
-    }
     '/_shell/technician': {
       id: '/_shell/technician'
       path: '/technician'
@@ -268,7 +249,6 @@ interface ShellRouteChildren {
   ShellFaultDetectionRoute: typeof ShellFaultDetectionRoute
   ShellLiveMonitoringRoute: typeof ShellLiveMonitoringRoute
   ShellServiceRoute: typeof ShellServiceRoute
-  ShellSettingsRoute: typeof ShellSettingsRoute
   ShellTechnicianRoute: typeof ShellTechnicianRoute
   ShellTrendsRoute: typeof ShellTrendsRoute
 }
@@ -280,7 +260,6 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellFaultDetectionRoute: ShellFaultDetectionRoute,
   ShellLiveMonitoringRoute: ShellLiveMonitoringRoute,
   ShellServiceRoute: ShellServiceRoute,
-  ShellSettingsRoute: ShellSettingsRoute,
   ShellTechnicianRoute: ShellTechnicianRoute,
   ShellTrendsRoute: ShellTrendsRoute,
 }

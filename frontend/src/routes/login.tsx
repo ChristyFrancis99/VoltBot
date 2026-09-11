@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Zap, AlertCircle, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, ShieldCheck } from "lucide-react";
 import { useBattery } from "@/lib/battery/store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import loginPage from "@/assets/login-page.png";
+import logo from "@/assets/logo-head.png";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -61,9 +62,10 @@ function LoginPage() {
         <section className="flex h-full min-w-0 items-center justify-center overflow-hidden bg-white px-7 py-5 sm:px-10 lg:px-10 xl:px-14">
           <div className="w-full max-w-[390px]">
             <div className="mb-5">
-              <div className="mb-3 grid size-11 place-items-center rounded-2xl bg-primary-soft text-primary">
-                <Zap className="size-5 fill-current" />
+              <div className="mb-3">
+                <img src={logo} alt="VoltBot Logo" className="h-12 w-auto object-contain" />
               </div>
+
               <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
               <p className="mt-1.5 text-sm text-muted-foreground">
                 Sign in to access your EV battery monitoring dashboard.
@@ -79,7 +81,9 @@ function LoginPage() {
 
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <Label htmlFor="username" className="text-xs font-semibold">Username or Email</Label>
+                <Label htmlFor="username" className="text-xs font-semibold">
+                  Username or Email
+                </Label>
                 <Input
                   id="username"
                   type="text"
@@ -92,7 +96,9 @@ function LoginPage() {
               </div>
 
               <div>
-                <Label htmlFor="password" className="text-xs font-semibold">Password</Label>
+                <Label htmlFor="password" className="text-xs font-semibold">
+                  Password
+                </Label>
                 <div className="relative mt-1.5">
                   <Input
                     id="password"
@@ -121,7 +127,12 @@ function LoginPage() {
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(!!checked)}
                   />
-                  <label htmlFor="remember" className="cursor-pointer text-xs text-muted-foreground">Remember me</label>
+                  <label
+                    htmlFor="remember"
+                    className="cursor-pointer text-xs text-muted-foreground"
+                  >
+                    Remember me
+                  </label>
                 </div>
                 <button
                   type="button"
@@ -132,7 +143,11 @@ function LoginPage() {
                 </button>
               </div>
 
-              <Button type="submit" disabled={loading} className="h-11 w-full rounded-xl font-semibold shadow-sm">
+              <Button
+                type="submit"
+                disabled={loading}
+                className="h-11 w-full rounded-xl font-semibold shadow-sm"
+              >
                 {loading ? "Signing in…" : "Sign In"}
               </Button>
             </form>
@@ -151,9 +166,15 @@ function LoginPage() {
                 <div>
                   <p className="text-xs font-semibold text-foreground">Demo Access Credentials</p>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Username: <code className="rounded bg-white px-1.5 py-0.5 font-mono text-foreground">admin</code>
+                    Username:{" "}
+                    <code className="rounded bg-white px-1.5 py-0.5 font-mono text-foreground">
+                      admin
+                    </code>
                     <span className="mx-1">•</span>
-                    Password: <code className="rounded bg-white px-1.5 py-0.5 font-mono text-foreground">admin123</code>
+                    Password:{" "}
+                    <code className="rounded bg-white px-1.5 py-0.5 font-mono text-foreground">
+                      admin123
+                    </code>
                   </p>
                 </div>
               </div>
