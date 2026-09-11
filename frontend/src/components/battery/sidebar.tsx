@@ -1,4 +1,4 @@
-import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Activity,
   BatteryCharging,
@@ -30,8 +30,7 @@ type NavRoute =
   | "/trends"
   | "/alerts"
   | "/service"
-  | "/technician"
-  | "/settings";
+  | "/technician";
 
 type NavItem = { to: NavRoute; label: string; icon: LucideIcon };
 type NavSection = { label: string; items: readonly NavItem[] };
@@ -51,7 +50,6 @@ const navSections: readonly NavSection[] = [
     { to: "/service", label: "Service & Maintenance", icon: Wrench },
     { to: "/technician", label: "Technician Mode", icon: BatteryCharging },
   ] },
-  { label: "System", items: [{ to: "/settings", label: "Settings", icon: Settings }] },
 ];
 
 export const navItems = navSections.flatMap((section) => section.items);
@@ -59,10 +57,30 @@ export const navItems = navSections.flatMap((section) => section.items);
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useBattery();
-  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(Boolean(onNavigate));
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [emailAlerts, setEmailAlerts] = useState(true);
+  const [smsAlerts, setSmsAlerts] = useState(true);
+  const [pushAlerts, setPushAlerts] = useState(true);
+  const [samplingRate, setSamplingRate] = useState("2");
+  const [imbalanceThreshold, setImbalanceThreshold] = useState("30");
+  const [tempThreshold, setTempThreshold] = useState("35");
+  const [saved, setSaved] = useState(false);
   const firstName = user?.name?.split(" ")[0] ?? "Christy";
   const userName = user?.name ?? "Christy Francis";
+
+  const handleSaveSettings = () => {
+    setSaved(true);
+    window.setTimeout(() => setSaved(false), 2500);
+  };
+
+  const handleLogout = () => {
+    signOut();
+    setProfileOpen(false);
+    onNavigate?.();
+    window.location.assign("/");
+  };
 
   return (
     <div className={cn("flex h-full flex-col border-r border-sidebar-border bg-sidebar px-2 py-5 transition-[width] duration-200 ease-out", expanded ? "w-64" : "w-[72px]")}>
@@ -93,13 +111,73 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className={cn("mt-4 border-t border-sidebar-border pt-3", expanded ? "px-1" : "px-0")}>
-        <div className={cn("flex items-center rounded-xl bg-muted/50", expanded ? "gap-3 px-3 py-2.5" : "size-11 justify-center")} title={!expanded ? `${userName} · Technician/Admin` : undefined}>
+      <div className={cn("relative mt-4 border-t border-sidebar-border pt-3", expanded ? "px-1" : "px-0")}>
+        {profileOpen && expanded && (
+          <div className="mb-2 max-h-[min(60vh,520px)] overflow-y-auto rounded-2xl border border-sidebar-border bg-background p-3 shadow-lg">
+            <div className="mb-3 flex items-center gap-3 border-b border-border pb-3">
+              <div className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">{firstName.charAt(0).toUpperCase()}</div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
+                <p className="truncate text-[11px] text-muted-foreground">Technician / Admin</p>
+              </div>
+            </div>
+
+            <button type="button" onClick={() => setSettingsOpen((v) => !v)} className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-foreground hover:bg-muted">
+              <span className="flex items-center gap-2"><Settings className="size-3.5" /> Settings</span>
+              <span className="text-[10px] text-muted-foreground">{settingsOpen ? "Hide" : "Open"}</span>
+            </button>
+
+            {settingsOpen && (
+              <div className="mt-2 space-y-3 rounded-xl bg-muted/40 p-2.5">
+                <div>
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Account</p>
+                  <div className="rounded-lg bg-background px-2.5 py-2">
+                    <p className="text-[11px] text-muted-foreground">Email</p>
+                    <p className="truncate text-xs font-medium text-foreground">admin@voltbot.io</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Notifications</p>
+                  <div className="space-y-1">
+                    {[
+                      ["Email alerts", emailAlerts, setEmailAlerts],
+                      ["SMS urgent alerts", smsAlerts, setSmsAlerts],
+                      ["Browser push", pushAlerts, setPushAlerts],
+                    ].map(([label, checked, setter]) => (
+                      <label key={label as string} className="flex cursor-pointer items-center justify-between rounded-lg bg-background px-2.5 py-2 text-[11px]">
+                        <span>{label as string}</span>
+                        <input type="checkbox" checked={checked as boolean} onChange={(e) => (setter as (value: boolean) => void)(e.target.checked)} className="size-3.5 accent-primary" />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Monitoring</p>
+                  <div className="space-y-2">
+                    <label className="block text-[11px]">Sampling interval (sec)<input type="number" min="1" value={samplingRate} onChange={(e) => setSamplingRate(e.target.value)} className="mt-1 h-8 w-full rounded-lg border border-border bg-background px-2 text-xs" /></label>
+                    <label className="block text-[11px]">Cell imbalance warning (mV)<input type="number" min="0" value={imbalanceThreshold} onChange={(e) => setImbalanceThreshold(e.target.value)} className="mt-1 h-8 w-full rounded-lg border border-border bg-background px-2 text-xs" /></label>
+                    <label className="block text-[11px]">Thermal warning (°C)<input type="number" min="0" value={tempThreshold} onChange={(e) => setTempThreshold(e.target.value)} className="mt-1 h-8 w-full rounded-lg border border-border bg-background px-2 text-xs" /></label>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 pt-1">
+                  {saved && <span className="text-[10px] font-medium text-success">Saved</span>}
+                  <button type="button" onClick={handleSaveSettings} className="ml-auto rounded-lg bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground hover:opacity-90">Save settings</button>
+                </div>
+              </div>
+            )}
+
+            <button type="button" onClick={handleLogout} className="mt-2 flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/10"><LogOut className="size-3.5" /> Logout</button>
+          </div>
+        )}
+
+        <button type="button" onClick={() => { if (!expanded) setExpanded(true); setProfileOpen((v) => !v); }} title={!expanded ? `${userName} · Profile` : undefined} aria-expanded={profileOpen} className={cn("flex w-full items-center rounded-xl bg-muted/50 text-left transition-colors hover:bg-muted", expanded ? "gap-3 px-3 py-2.5" : "mx-auto size-11 justify-center")}>
           <div className="grid size-8 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{firstName.charAt(0).toUpperCase()}</div>
-          {expanded && <div className="min-w-0"><p className="truncate text-xs font-semibold text-foreground">{userName}</p><p className="truncate text-[10px] text-muted-foreground">Technician / Admin</p></div>}
-          {!expanded && <UserCircle className="hidden" />}
-        </div>
-        <button type="button" onClick={() => { signOut(); navigate({ to: "/", replace: true }); }} title={!expanded ? "Logout" : undefined} className={cn("mt-1.5 flex items-center rounded-xl text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground", expanded ? "w-full gap-3 px-3 py-2.5" : "mx-auto size-11 justify-center")}><LogOut className="size-4 shrink-0" />{expanded && "Logout"}</button>
+          {expanded && <div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold text-foreground">{userName}</p><p className="truncate text-[10px] text-muted-foreground">Profile & settings</p></div>}
+          {expanded && <UserCircle className={cn("size-4 shrink-0 text-muted-foreground transition-transform", profileOpen && "rotate-180")} />}
+        </button>
       </div>
     </div>
   );
