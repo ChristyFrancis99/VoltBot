@@ -18,7 +18,8 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useBattery } from "@/lib/battery/store";
-import voltbotLogo from "@/assets/voltbot-logo.jpg";
+import logoHead from "@/assets/logo-head.png";
+import voltBotLogo from "@/assets/volt-bot.png";
 
 export const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -50,55 +51,59 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         expanded ? "w-64" : "w-[72px]",
       )}
     >
-      {/* Logo / expand-collapse control */}
-      <div className={cn("flex items-center", expanded ? "justify-between px-2" : "justify-center")}>
+      {/* Logo area: two transparent image holders, with no background effects */}
+      <div className={cn("flex items-center", expanded ? "justify-between px-1" : "justify-center")}>
         <button
           type="button"
           onClick={toggleSidebar}
           title={expanded ? "Collapse sidebar" : "Open sidebar"}
           aria-label={expanded ? "Collapse sidebar" : "Open sidebar"}
           className={cn(
-            "flex min-w-0 items-center rounded-xl transition-colors hover:bg-muted",
-            expanded ? "gap-2.5 px-1.5 py-1" : "size-11 justify-center",
+            "flex min-w-0 items-center",
+            expanded ? "gap-2.5" : "justify-center",
           )}
         >
           <img
-            src={voltbotLogo}
-            alt="VoltBot Logo"
-            className="size-9 shrink-0 rounded-xl object-cover shadow-sm"
+            src={logoHead}
+            alt="VoltBot logo"
+            className={cn(
+              "shrink-0 object-contain",
+              expanded ? "h-10 w-10" : "h-10 w-10",
+            )}
           />
           {expanded && (
-            <span className="min-w-0 text-left">
-              <span className="block truncate text-base font-bold text-foreground">VoltBot</span>
-              <span className="block truncate text-[11px] text-muted-foreground">
-                EV Battery Monitoring
-              </span>
-            </span>
+            <img
+              src={voltBotLogo}
+              alt="VoltBot"
+              className="h-9 w-auto max-w-[128px] object-contain"
+            />
           )}
         </button>
 
-        {expanded && (
-          <button
-            type="button"
-            onClick={toggleSidebar}
-            aria-label="Collapse sidebar"
-            title="Collapse sidebar"
-            className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <ChevronLeft className="size-4" />
-          </button>
-        )}
+        <div className="flex items-center gap-1">
+          {expanded && (
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+              className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+          )}
 
-        {onNavigate && expanded && (
-          <button
-            type="button"
-            onClick={onNavigate}
-            aria-label="Close navigation"
-            className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-muted lg:hidden"
-          >
-            <X className="size-4" />
-          </button>
-        )}
+          {onNavigate && expanded && (
+            <button
+              type="button"
+              onClick={onNavigate}
+              aria-label="Close navigation"
+              className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-muted lg:hidden"
+            >
+              <X className="size-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {!expanded && (
