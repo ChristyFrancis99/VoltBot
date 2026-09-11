@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Sidebar } from "@/components/battery/Sidebar";
+import { Sidebar } from "@/components/battery/sidebar";
 import { TopHeader } from "@/components/battery/TopHeader";
 import { useBattery } from "@/lib/battery/store";
 
