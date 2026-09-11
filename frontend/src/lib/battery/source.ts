@@ -65,16 +65,10 @@ export function createDemoSnapshot(
     cellImbalance: { value: imbalanceMv, unit: "mV", status: imbalanceMv > 30 ? ("monitor" as const) : ("normal" as const), available: true },
   };
 
-  const anomalyScore = Number(
-    Math.min(
-      1,
-      Math.max(
-        0,
-        0.45 * Math.min(1, Math.max(0, (temperature - 29) / 10)) +
-          0.55 * Math.min(1, Math.max(0, (imbalanceMv - 10) / 50)),
-      ),
-    ).toFixed(2),
-  );
+  // Transparent prototype score: a bounded heuristic, not a trained ML model.
+  const temperatureFactor = Math.min(1, Math.max(0, (temperature - 29) / 15));
+  const imbalanceFactor = Math.min(1, Math.max(0, (imbalanceMv - 10) / 70));
+  const anomalyScore = Number((0.35 + 0.35 * temperatureFactor + 0.35 * imbalanceFactor).toFixed(2));
 
   const snapshot: BatterySnapshot = {
     batteryId: "EVB-001",
