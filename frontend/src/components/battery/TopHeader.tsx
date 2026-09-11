@@ -21,6 +21,15 @@ const searchTargets = [
   { label: "ESP32 device status", to: "/technician" as const },
 ];
 
+function formatCurrentDate() {
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    weekday: "long",
+  }).format(new Date());
+}
+
 export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
   const { snapshot, user } = useBattery();
   const [query, setQuery] = useState("");
@@ -48,6 +57,7 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search battery, alert, event..."
             className="h-10 rounded-xl border-transparent bg-muted pl-9"
+            aria-label="Search battery, alert, or event"
           />
           {results.length > 0 && (
             <ul className="absolute z-30 mt-2 w-full overflow-hidden rounded-xl border border-border bg-popover shadow-lg">
@@ -70,7 +80,7 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
 
         <div className="ml-auto flex shrink-0 items-center gap-3">
           <span className="hidden whitespace-nowrap text-xs text-muted-foreground lg:block">
-            10 September 2026, Thursday
+            {formatCurrentDate()}
           </span>
 
           <Popover>
@@ -117,7 +127,7 @@ export function TopHeader({ onOpenNav }: { onOpenNav: () => void }) {
 
       {!snapshot.device.cloudSynced && (
         <p className="mt-3 rounded-xl bg-critical-soft px-3 py-2 text-xs text-destructive">
-          Cloud connection lost. Data will synchronize when connection is restored.
+          Cloud connection lost. Live telemetry is paused and the dashboard will resume when synchronization is restored.
         </p>
       )}
     </header>
