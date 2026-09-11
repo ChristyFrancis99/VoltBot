@@ -4,17 +4,10 @@ import {
   Wifi,
   Cloud,
   CheckCircle2,
-  XCircle,
-  Sliders,
   Terminal,
-  Activity,
-  Zap,
-  ShieldAlert,
-  Thermometer,
-  Layers,
 } from "lucide-react";
 import { useBattery } from "@/lib/battery/store";
-import { Panel, StatusChip, StatusDot, InfoValue } from "@/components/battery/ui";
+import { Panel, StatusChip, StatusDot } from "@/components/battery/ui";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_shell/technician")({
@@ -22,12 +15,11 @@ export const Route = createFileRoute("/_shell/technician")({
 });
 
 function TechnicianPage() {
-  const { snapshot, simulation, toggleDevice, setMode } = useBattery();
+  const { snapshot, simulation, toggleDevice } = useBattery();
   const device = snapshot.device;
 
   return (
     <div className="space-y-5">
-      {/* Header */}
       <div className="card-surface flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
@@ -39,17 +31,15 @@ function TechnicianPage() {
             </h1>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            Low-level hardware diagnostics, telemetry raw data & simulation controls
+            Hardware status, telemetry diagnostics and prototype fault-injection controls
           </p>
         </div>
-
         <span className="self-start rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary-soft-foreground sm:self-center">
-          Hardware Debug Interface Active
+          Prototype Diagnostic Interface
         </span>
       </div>
 
-      {/* Device & Hardware Status (Requirement 12) */}
-      <Panel title="Hardware Gateway & Sensor Status" description="ESP32 bus diagnostics">
+      <Panel title="Hardware Gateway & Sensor Status" description="ESP32 and sensor connectivity state">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           <div className="rounded-xl border border-border bg-card p-3 text-center">
             <span className="text-[11px] text-muted-foreground block">ESP32 Gateway</span>
@@ -101,13 +91,14 @@ function TechnicianPage() {
           </div>
           <div>
             <span className="text-muted-foreground block">Last Packet</span>
-            <span className="font-semibold text-foreground">{device.lastPacketSeconds} sec ago</span>
+            <span className="font-semibold text-foreground">
+              {device.lastPacketSeconds === 0 ? "Unavailable" : `${device.lastPacketSeconds} sec ago`}
+            </span>
           </div>
         </div>
       </Panel>
 
-      {/* Technician Debug & Simulation Controls */}
-      <Panel title="Simulation & Fault Injection Controls" description="Test system fallback and error handling states">
+      <Panel title="Simulation & Fault Injection Controls" description="Test connection fallback and sensor error states without claiming real hardware telemetry">
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant={simulation.esp32Online ? "outline" : "destructive"}
@@ -138,8 +129,7 @@ function TechnicianPage() {
         </div>
       </Panel>
 
-      {/* Individual Cell Voltages Grid */}
-      <Panel title="Individual Cell Voltage Matrix" description="High precision 12-bit ADC reading per cell">
+      <Panel title="Individual Cell Voltage Matrix" description="Prototype cell readings; replace with the real cell-monitor adapter for hardware deployment">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {snapshot.cells.map((cell) => (
             <div key={cell.id} className="rounded-xl border border-border bg-card p-3 text-center">
@@ -155,47 +145,48 @@ function TechnicianPage() {
         </div>
       </Panel>
 
-      {/* Deep Technical Analysis */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Panel title="ML Anomaly Diagnostics" description="Isolation forest & autoencoder feature weights">
+        <Panel title="Prototype Anomaly Diagnostics" description="Transparent rule-based anomaly score used by the demo source">
           <dl className="divide-y divide-border text-xs">
             <div className="flex justify-between py-2.5">
-              <dt className="text-muted-foreground font-medium">Anomaly Confidence Score</dt>
+              <dt className="text-muted-foreground font-medium">Anomaly Score</dt>
               <dd className="font-bold text-foreground">{snapshot.anomalyScore.toFixed(2)} / 1.00</dd>
             </div>
             <div className="flex justify-between py-2.5">
-              <dt className="text-muted-foreground font-medium">Voltage Deviation Index</dt>
-              <dd className="font-semibold text-warning font-mono">52 mV (Threshold: 30 mV)</dd>
+              <dt className="text-muted-foreground font-medium">Cell Voltage Deviation</dt>
+              <dd className="font-semibold text-warning font-mono">{snapshot.cellImbalance.available ? `${snapshot.cellImbalance.value} mV` : "Unavailable"}</dd>
             </div>
             <div className="flex justify-between py-2.5">
-              <dt className="text-muted-foreground font-medium">Thermal Gradient Rate</dt>
-              <dd className="font-semibold text-warning font-mono">+0.6 °C / cycle</dd>
+              <dt className="text-muted-foreground font-medium">Temperature Baseline</dt>
+              <dd className="font-semibold text-warning font-mono">29–34 °C</dd>
             </div>
             <div className="flex justify-between py-2.5">
-              <dt className="text-muted-foreground font-medium">Model Inference Time</dt>
-              <dd className="font-mono text-foreground">4.2 ms</dd>
+              <dt className="text-muted-foreground font-medium">Inference Engine</dt>
+              <dd className="font-mono text-foreground">Prototype rules</dd>
             </div>
           </dl>
         </Panel>
 
-        <Panel title="System Sensor Diagnostic Summary" description="Internal bus communication status">
+        <Panel title="System Diagnostic Summary" description="Application-level prototype checks; not a physical bus validation">
           <ul className="space-y-2.5 text-xs">
             <li className="flex items-center justify-between rounded-lg bg-muted/50 p-2.5">
-              <span className="font-medium text-foreground">I2C Bus Status</span>
+              <span className="font-medium text-foreground">ESP32 connectivity</span>
               <span className="text-success font-semibold flex items-center gap-1">
-                <CheckCircle2 className="size-3.5" /> ACK OK (0x48)
+                {device.esp32Online ? <CheckCircle2 className="size-3.5" /> : <Wifi className="size-3.5" />}
+                {device.esp32Online ? "Connected" : "Disconnected"}
               </span>
             </li>
             <li className="flex items-center justify-between rounded-lg bg-muted/50 p-2.5">
-              <span className="font-medium text-foreground">SPI Cell Monitor ADC</span>
+              <span className="font-medium text-foreground">Cloud synchronization</span>
               <span className="text-success font-semibold flex items-center gap-1">
-                <CheckCircle2 className="size-3.5" /> Synchronized (8s)
+                <Cloud className="size-3.5" />
+                {device.cloudSynced ? "Synchronized" : "Unavailable"}
               </span>
             </li>
             <li className="flex items-center justify-between rounded-lg bg-muted/50 p-2.5">
-              <span className="font-medium text-foreground">Shunt Resistor Calibration</span>
-              <span className="text-success font-semibold flex items-center gap-1">
-                <CheckCircle2 className="size-3.5" /> 0.5 mΩ Calibrated
+              <span className="font-medium text-foreground">Telemetry source</span>
+              <span className="font-semibold flex items-center gap-1 text-muted-foreground">
+                <Cpu className="size-3.5" /> Demo / Mock
               </span>
             </li>
           </ul>
