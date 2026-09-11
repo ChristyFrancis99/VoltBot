@@ -21,17 +21,37 @@ import { useBattery } from "@/lib/battery/store";
 import logoHead from "@/assets/logo-head.png";
 import voltBotLogo from "@/assets/volt-bot.png";
 
-export const navItems = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/live-monitoring", label: "Live Monitoring", icon: Activity },
-  { to: "/battery-health", label: "Battery Health", icon: Gauge },
-  { to: "/fault-detection", label: "Fault Detection", icon: ShieldAlert },
-  { to: "/trends", label: "Trends & History", icon: LineChart },
-  { to: "/alerts", label: "Alerts", icon: Bell },
-  { to: "/service", label: "Service & Maintenance", icon: Wrench },
-  { to: "/technician", label: "Technician Mode", icon: BatteryCharging },
-  { to: "/settings", label: "Settings", icon: Settings },
+const navSections = [
+  {
+    label: "Monitor",
+    items: [
+      { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { to: "/live-monitoring", label: "Live Monitoring", icon: Activity },
+      { to: "/battery-health", label: "Battery Health", icon: Gauge },
+    ],
+  },
+  {
+    label: "Diagnostics",
+    items: [
+      { to: "/fault-detection", label: "Fault Detection", icon: ShieldAlert },
+      { to: "/trends", label: "Trends & History", icon: LineChart },
+      { to: "/alerts", label: "Alerts", icon: Bell },
+    ],
+  },
+  {
+    label: "Maintenance",
+    items: [
+      { to: "/service", label: "Service & Maintenance", icon: Wrench },
+      { to: "/technician", label: "Technician Mode", icon: BatteryCharging },
+    ],
+  },
+  {
+    label: "System",
+    items: [{ to: "/settings", label: "Settings", icon: Settings }],
+  },
 ] as const;
+
+export const navItems = navSections.flatMap((section) => section.items);
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -102,31 +122,49 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </button>
       )}
 
-      <nav className={cn("mt-7 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto no-scrollbar", expanded ? "px-1" : "items-center")}>
-        {navItems.map((item) => {
-          const active = pathname === item.to;
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => {
-                if (!expanded) setExpanded(true);
-                onNavigate?.();
-              }}
-              title={!expanded ? item.label : undefined}
-              className={cn(
-                "flex items-center rounded-xl text-sm transition-colors",
-                expanded ? "gap-3 px-3 py-2.5" : "size-11 justify-center",
-                active
-                  ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              <item.icon className="size-4 shrink-0" />
-              {expanded && <span className="truncate">{item.label}</span>}
-            </Link>
-          );
-        })}
+      <nav className="mt-6 flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
+        {navSections.map((section, sectionIndex) => (
+          <div
+            key={section.label}
+            className={cn(
+              sectionIndex > 0 && "mt-5 border-t border-sidebar-border pt-4",
+              expanded ? "px-1" : "px-0",
+            )}
+          >
+            {expanded && (
+              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
+                {section.label}
+              </p>
+            )}
+
+            <div className={cn("flex flex-col gap-1", !expanded && "items-center")}>
+              {section.items.map((item) => {
+                const active = pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => {
+                      if (!expanded) setExpanded(true);
+                      onNavigate?.();
+                    }}
+                    title={!expanded ? item.label : undefined}
+                    className={cn(
+                      "flex items-center rounded-xl text-sm transition-colors",
+                      expanded ? "gap-3 px-3 py-2.5" : "size-11 justify-center",
+                      active
+                        ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground shadow-sm"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    )}
+                  >
+                    <item.icon className="size-4 shrink-0" />
+                    {expanded && <span className="truncate">{item.label}</span>}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       <div className={cn("mt-4 border-t border-sidebar-border pt-3", expanded ? "px-1" : "px-0")}>
