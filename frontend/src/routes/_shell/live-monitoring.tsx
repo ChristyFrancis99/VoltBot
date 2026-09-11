@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Activity, Battery, Thermometer, Zap, RefreshCw, AlertTriangle, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Activity, Battery, Thermometer, Zap, AlertTriangle } from "lucide-react";
 import { useBattery } from "@/lib/battery/store";
-import { Panel, StatusChip, StatusDot } from "@/components/battery/ui";
+import { Panel, StatusChip } from "@/components/battery/ui";
 import { MetricCard } from "@/components/battery/MetricCard";
 import type { OperatingMode } from "@/lib/battery/types";
 
@@ -11,28 +11,28 @@ export const Route = createFileRoute("/_shell/live-monitoring")({
 
 function LiveMonitoringPage() {
   const { snapshot, setMode } = useBattery();
+  const live = snapshot.device.esp32Online && snapshot.device.cloudSynced;
 
   return (
     <div className="space-y-5">
-      {/* Header Banner */}
       <div className="card-surface flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-success-soft px-2.5 py-1 text-xs font-semibold text-success">
-              <span className="size-2 rounded-full bg-success animate-pulse" />
-              Live
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${live ? "bg-success-soft text-success" : "bg-critical-soft text-destructive"}`}>
+              <span className={`size-2 rounded-full ${live ? "bg-success animate-pulse" : "bg-destructive"}`} />
+              {live ? "Live" : "Unavailable"}
             </span>
             <h1 className="text-xl font-bold tracking-tight text-foreground">
-              Live Battery Telemetry
+              Battery Telemetry
             </h1>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            Real-time sensor stream from ESP32 telemetry gateway &bull; Last updated{" "}
-            {snapshot.lastUpdatedSeconds} seconds ago
+            {live
+              ? "Prototype telemetry stream updating every 2 seconds from the demo source."
+              : "Live telemetry is unavailable. The interface will resume when the simulated connection is restored."}
           </p>
         </div>
 
-        {/* Operating Mode Selector */}
         <div className="flex items-center gap-2 rounded-xl bg-muted p-1">
           {(["discharging", "charging", "idle"] as OperatingMode[]).map((mode) => {
             const active = snapshot.operatingMode === mode;
@@ -40,11 +40,12 @@ function LiveMonitoringPage() {
               <button
                 key={mode}
                 onClick={() => setMode(mode)}
+                disabled={!live}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition-all ${
                   active
                     ? "bg-background text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                } ${!live ? "cursor-not-allowed opacity-50" : ""}`}
               >
                 {mode}
               </button>
@@ -53,53 +54,29 @@ function LiveMonitoringPage() {
         </div>
       </div>
 
-      {/* Metric Cards Row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <MetricCard
-          label="State of Charge"
-          reading={snapshot.soc}
-          statusLabel={`${snapshot.soc.value}%`}
-          icon={Battery}
-        />
-        <MetricCard
-          label="Pack Voltage"
-          reading={snapshot.packVoltage}
-          statusLabel={`${snapshot.packVoltage.value} V`}
-          icon={Zap}
-        />
-        <MetricCard
-          label="Current"
-          reading={snapshot.current}
-          statusLabel={`${snapshot.current.value} A`}
-          icon={Activity}
-        />
-        <MetricCard
-          label="Temperature"
-          reading={snapshot.temperature}
-          statusLabel={`${snapshot.temperature.value} °C`}
-          icon={Thermometer}
-        />
+        <MetricCard label="State of Charge" reading={snapshot.soc} statusLabel={`${snapshot.soc.value ?? "--"}%`} icon={Battery} />
+        <MetricCard label="Pack Voltage" reading={snapshot.packVoltage} statusLabel={`${snapshot.packVoltage.value ?? "--"} V`} icon={Zap} />
+        <MetricCard label="Current" reading={snapshot.current} statusLabel={`${snapshot.current.value ?? "--"} A`} icon={Activity} />
+        <MetricCard label="Temperature" reading={snapshot.temperature} statusLabel={`${snapshot.temperature.value ?? "--"} °C`} icon={Thermometer} />
         <div className="card-surface flex flex-col justify-between p-4">
           <span className="text-xs font-medium text-muted-foreground">Operating Mode</span>
-          <p className="text-xl font-bold capitalize leading-none text-foreground">
-            {snapshot.operatingMode}
-          </p>
+          <p className="text-xl font-bold capitalize leading-none text-foreground">{snapshot.operatingMode}</p>
           <StatusChip
-            status={snapshot.operatingMode === "charging" ? "info" : "normal"}
-            label={snapshot.operatingMode === "charging" ? "Active Charge" : "Standard Mode"}
+            status={live ? (snapshot.operatingMode === "charging" ? "info" : "normal") : "critical"}
+            label={live ? (snapshot.operatingMode === "charging" ? "Active Charge" : "Standard Mode") : "Unavailable"}
             className="self-start"
           />
         </div>
       </div>
 
-      {/* Cell Voltage Monitoring Grid */}
       <Panel
         title="Cell Voltage Monitoring"
-        description="Individual cell status across the 8s battery pack array"
+        description="Individual cell status across the 8-cell prototype pack"
         action={
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1 font-medium text-foreground">
-              Max Delta: <span className="text-warning font-semibold">{snapshot.cellImbalance.value} mV</span>
+              Max Delta: <span className="text-warning font-semibold">{snapshot.cellImbalance.available ? `${snapshot.cellImbalance.value} mV` : "--"}</span>
             </span>
           </div>
         }
@@ -107,6 +84,7 @@ function LiveMonitoringPage() {
         <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-4">
           {snapshot.cells.map((cell) => {
             const isWarning = cell.status === "warning";
+            const isUnavailable = cell.voltage === null;
             const voltage = cell.voltage !== null ? cell.voltage.toFixed(2) : "--";
 
             return (
@@ -122,7 +100,7 @@ function LiveMonitoringPage() {
                   <span className="text-xs font-semibold text-muted-foreground">{cell.id}</span>
                   <StatusChip
                     status={cell.status}
-                    label={isWarning ? "Warning" : "Normal"}
+                    label={isUnavailable ? "Unavailable" : isWarning ? "Warning" : "Normal"}
                   />
                 </div>
 
@@ -133,15 +111,10 @@ function LiveMonitoringPage() {
                   <span className="text-[11px] text-muted-foreground">Target: 4.00 V</span>
                 </div>
 
-                {/* Progress bar visualizer */}
                 <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-muted">
                   <div
-                    className={`h-full rounded-full transition-all duration-300 ${
-                      isWarning ? "bg-warning" : "bg-primary"
-                    }`}
-                    style={{
-                      width: cell.voltage ? `${Math.min(100, (cell.voltage / 4.2) * 100)}%` : "0%",
-                    }}
+                    className={`h-full rounded-full transition-all duration-300 ${isWarning ? "bg-warning" : "bg-primary"}`}
+                    style={{ width: cell.voltage !== null ? `${Math.min(100, (cell.voltage / 4.2) * 100)}%` : "0%" }}
                   />
                 </div>
 
@@ -156,30 +129,17 @@ function LiveMonitoringPage() {
         </div>
       </Panel>
 
-      {/* Live Diagnostic Stream */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <Panel title="Sensor Packet Diagnostics" description="ESP32 bus packet verification">
+        <Panel title="Sensor Packet Diagnostics" description="Application-level telemetry status">
           <dl className="divide-y divide-border text-xs">
-            <div className="flex justify-between py-2">
-              <dt className="text-muted-foreground">Device ID</dt>
-              <dd className="font-mono font-medium">{snapshot.device.deviceId}</dd>
-            </div>
-            <div className="flex justify-between py-2">
-              <dt className="text-muted-foreground">Sampling Rate</dt>
-              <dd className="font-medium">2000 ms (2 seconds)</dd>
-            </div>
-            <div className="flex justify-between py-2">
-              <dt className="text-muted-foreground">Wi-Fi Signal (RSSI)</dt>
-              <dd className="font-medium">{snapshot.device.wifiSignalDbm} dBm (Good)</dd>
-            </div>
-            <div className="flex justify-between py-2">
-              <dt className="text-muted-foreground">Firmware Version</dt>
-              <dd className="font-mono font-medium">{snapshot.device.firmware}</dd>
-            </div>
+            <div className="flex justify-between py-2"><dt className="text-muted-foreground">Device ID</dt><dd className="font-mono font-medium">{snapshot.device.deviceId}</dd></div>
+            <div className="flex justify-between py-2"><dt className="text-muted-foreground">Update Interval</dt><dd className="font-medium">2 seconds (demo)</dd></div>
+            <div className="flex justify-between py-2"><dt className="text-muted-foreground">Wi-Fi Signal (RSSI)</dt><dd className="font-medium">{snapshot.device.wifiConnected ? `${snapshot.device.wifiSignalDbm} dBm` : "Unavailable"}</dd></div>
+            <div className="flex justify-between py-2"><dt className="text-muted-foreground">Firmware Version</dt><dd className="font-mono font-medium">{snapshot.device.firmware}</dd></div>
           </dl>
         </Panel>
 
-        <Panel title="Recent System Events" description="Telemetry event log stream">
+        <Panel title="Recent System Events" description="Demo telemetry event log">
           <ul className="space-y-2.5 text-xs">
             {snapshot.events.map((ev, i) => (
               <li key={i} className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2">
