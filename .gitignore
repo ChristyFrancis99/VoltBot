@@ -20,6 +20,8 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+
+*.db
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -30,3 +32,48 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# Python virtual environments and build/runtime artifacts
+.venv/
+venv/
+env/
+ENV/
+pip-wheel-metadata/
+*.egg-info/
+.Python
+.coverage
+coverage.xml
+htmlcov/
+backend/battery_readings.db
+
+# Environment files may contain secrets
+.env
+.env.*
+*.env
+!.env.example
+!.env.*.example
+
+# Wokwi / Arduino secrets
+secrets.h
+wokwi/**/secrets.h
+!secrets.h.example
+!wokwi/**/secrets.h.example
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated ML datasets and plots
+ml/data/
+ml/processed/

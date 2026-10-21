@@ -14,6 +14,7 @@ import { Route as ShellRouteImport } from './routes/_shell'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ShellAlertsRouteImport } from './routes/_shell/alerts'
 import { Route as ShellBatteryHealthRouteImport } from './routes/_shell/battery-health'
+import { Route as ShellBatterySimulatorRouteImport } from './routes/_shell/battery-simulator'
 import { Route as ShellDashboardRouteImport } from './routes/_shell/dashboard'
 import { Route as ShellFaultDetectionRouteImport } from './routes/_shell/fault-detection'
 import { Route as ShellLiveMonitoringRouteImport } from './routes/_shell/live-monitoring'
@@ -43,6 +44,11 @@ const ShellAlertsRoute = ShellAlertsRouteImport.update({
 const ShellBatteryHealthRoute = ShellBatteryHealthRouteImport.update({
   id: '/battery-health',
   path: '/battery-health',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellBatterySimulatorRoute = ShellBatterySimulatorRouteImport.update({
+  id: '/battery-simulator',
+  path: '/battery-simulator',
   getParentRoute: () => ShellRoute,
 } as any)
 const ShellDashboardRoute = ShellDashboardRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/alerts': typeof ShellAlertsRoute
   '/battery-health': typeof ShellBatteryHealthRoute
+  '/battery-simulator': typeof ShellBatterySimulatorRoute
   '/dashboard': typeof ShellDashboardRoute
   '/fault-detection': typeof ShellFaultDetectionRoute
   '/live-monitoring': typeof ShellLiveMonitoringRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/alerts': typeof ShellAlertsRoute
   '/battery-health': typeof ShellBatteryHealthRoute
+  '/battery-simulator': typeof ShellBatterySimulatorRoute
   '/dashboard': typeof ShellDashboardRoute
   '/fault-detection': typeof ShellFaultDetectionRoute
   '/live-monitoring': typeof ShellLiveMonitoringRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_shell/alerts': typeof ShellAlertsRoute
   '/_shell/battery-health': typeof ShellBatteryHealthRoute
+  '/_shell/battery-simulator': typeof ShellBatterySimulatorRoute
   '/_shell/dashboard': typeof ShellDashboardRoute
   '/_shell/fault-detection': typeof ShellFaultDetectionRoute
   '/_shell/live-monitoring': typeof ShellLiveMonitoringRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/alerts'
     | '/battery-health'
+    | '/battery-simulator'
     | '/dashboard'
     | '/fault-detection'
     | '/live-monitoring'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/alerts'
     | '/battery-health'
+    | '/battery-simulator'
     | '/dashboard'
     | '/fault-detection'
     | '/live-monitoring'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_shell/alerts'
     | '/_shell/battery-health'
+    | '/_shell/battery-simulator'
     | '/_shell/dashboard'
     | '/_shell/fault-detection'
     | '/_shell/live-monitoring'
@@ -197,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellBatteryHealthRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/battery-simulator': {
+      id: '/_shell/battery-simulator'
+      path: '/battery-simulator'
+      fullPath: '/battery-simulator'
+      preLoaderRoute: typeof ShellBatterySimulatorRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/dashboard': {
       id: '/_shell/dashboard'
       path: '/dashboard'
@@ -245,6 +264,7 @@ declare module '@tanstack/react-router' {
 interface ShellRouteChildren {
   ShellAlertsRoute: typeof ShellAlertsRoute
   ShellBatteryHealthRoute: typeof ShellBatteryHealthRoute
+  ShellBatterySimulatorRoute: typeof ShellBatterySimulatorRoute
   ShellDashboardRoute: typeof ShellDashboardRoute
   ShellFaultDetectionRoute: typeof ShellFaultDetectionRoute
   ShellLiveMonitoringRoute: typeof ShellLiveMonitoringRoute
@@ -256,6 +276,7 @@ interface ShellRouteChildren {
 const ShellRouteChildren: ShellRouteChildren = {
   ShellAlertsRoute: ShellAlertsRoute,
   ShellBatteryHealthRoute: ShellBatteryHealthRoute,
+  ShellBatterySimulatorRoute: ShellBatterySimulatorRoute,
   ShellDashboardRoute: ShellDashboardRoute,
   ShellFaultDetectionRoute: ShellFaultDetectionRoute,
   ShellLiveMonitoringRoute: ShellLiveMonitoringRoute,

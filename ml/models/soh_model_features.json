@@ -1,0 +1,16 @@
+{
+  "target": "soh_percent",
+  "features": [
+    "mean_voltage_v",
+    "min_voltage_v",
+    "max_voltage_v",
+    "mean_current_a",
+    "min_current_a",
+    "max_current_a",
+    "mean_temperature_c",
+    "min_temperature_c",
+    "max_temperature_c",
+    "discharge_duration_s",
+    "measurement_count"
+  ]
+}

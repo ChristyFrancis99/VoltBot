@@ -26,6 +26,7 @@ type NavRoute =
   | "/dashboard"
   | "/live-monitoring"
   | "/battery-health"
+  | "/battery-simulator"
   | "/fault-detection"
   | "/trends"
   | "/alerts"
@@ -36,20 +37,25 @@ type NavItem = { to: NavRoute; label: string; icon: LucideIcon };
 type NavSection = { label: string; items: readonly NavItem[] };
 
 const navSections: readonly NavSection[] = [
-  { label: "Monitor", items: [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/live-monitoring", label: "Live Monitoring", icon: Activity },
-    { to: "/battery-health", label: "Battery Health", icon: Gauge },
-  ] },
-  { label: "Diagnostics", items: [
-    { to: "/fault-detection", label: "Fault Detection", icon: ShieldAlert },
-    { to: "/trends", label: "Trends & History", icon: LineChart },
-    { to: "/alerts", label: "Alerts", icon: Bell },
-  ] },
-  { label: "Maintenance", items: [
-    { to: "/service", label: "Service & Maintenance", icon: Wrench },
-    { to: "/technician", label: "Technician Mode", icon: BatteryCharging },
-  ] },
+  {
+    label: "Main",
+    items: [
+      { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
+      { to: "/live-monitoring", label: "Battery Details", icon: Activity },
+      { to: "/battery-simulator", label: "Try a Simulation", icon: Gauge },
+    ],
+  },
+  {
+    label: "Diagnostics & Tools",
+    items: [
+      { to: "/fault-detection", label: "Fault Diagnostics", icon: ShieldAlert },
+      { to: "/alerts", label: "Alert Logs", icon: Bell },
+      { to: "/technician", label: "Technician Mode", icon: BatteryCharging },
+      { to: "/trends", label: "Trends & History", icon: LineChart },
+      { to: "/service", label: "Service & Maintenance", icon: Wrench },
+      { to: "/battery-health", label: "Profile Baseline", icon: Gauge },
+    ],
+  },
 ];
 
 export const navItems = navSections.flatMap((section) => section.items);

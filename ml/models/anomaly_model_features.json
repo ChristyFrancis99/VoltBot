@@ -1,0 +1,17 @@
+{
+  "features": [
+    "mean_voltage_v",
+    "min_voltage_v",
+    "max_voltage_v",
+    "mean_current_a",
+    "min_current_a",
+    "max_current_a",
+    "mean_temperature_c",
+    "min_temperature_c",
+    "max_temperature_c",
+    "discharge_duration_s",
+    "measurement_count"
+  ],
+  "normal_training_selection": "Per battery, use cycles at or before the 75th percentile of source cycle_number as early-to-mid-life presumed-normal baseline samples; this excludes each battery's final cycle quartile and does not use SOH to select training rows.",
+  "contamination": 0.05
+}

@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "author": "VoltBot Team",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot_voltage",
+      "top": -140,
+      "left": -120,
+      "attrs": {
+        "label": "Pack Voltage (40-54V)"
+      }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "pot_temp",
+      "top": -140,
+      "left": 100,
+      "attrs": {
+        "label": "Pack Temp (20-65C)"
+      }
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "sw_imbalance",
+      "top": 140,
+      "left": -120,
+      "attrs": {
+        "label": "Cell Imbalance Fault",
+        "value": "1"
+      }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "pot_voltage:VCC", "red", [ "v0" ] ],
+    [ "esp:GND.1", "pot_voltage:GND", "black", [ "v0" ] ],
+    [ "pot_voltage:SIG", "esp:34", "blue", [ "v0" ] ],
+    [ "esp:3V3", "pot_temp:VCC", "red", [ "v0" ] ],
+    [ "esp:GND.1", "pot_temp:GND", "black", [ "v0" ] ],
+    [ "pot_temp:SIG", "esp:35", "orange", [ "v0" ] ],
+    [ "esp:GND.2", "sw_imbalance:1", "black", [ "v0" ] ],
+    [ "esp:21", "sw_imbalance:2", "purple", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

@@ -4,9 +4,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { getLatestBatteryReading, mapBatteryReadingToTelemetry } from "./api";
+import type { BatteryTelemetry } from "./api";
 import { createDemoSnapshot } from "./source";
 import type { BatterySnapshot, OperatingMode } from "./types";
 
@@ -21,6 +24,11 @@ interface SimulationState {
 
 interface BatteryContextValue {
   snapshot: BatterySnapshot;
+  liveTelemetry: BatteryTelemetry | null;
+  liveTelemetryLoading: boolean;
+  liveTelemetryError: string | null;
+  liveTelemetryConnected: boolean;
+  refreshLiveTelemetry: () => Promise<void>;
   simulation: SimulationState;
   setMode: (mode: OperatingMode) => void;
   toggleDevice: (key: keyof Omit<SimulationState, "mode">) => void;
@@ -36,6 +44,14 @@ const LAST_TEMP = { value: 36.2, at: "18:41" };
 
 export function BatteryProvider({ children }: { children: ReactNode }) {
   const [tick, setTick] = useState(0);
+  const [liveTelemetry, setLiveTelemetry] = useState<BatteryTelemetry | null>(null);
+  const [liveTelemetryLoading, setLiveTelemetryLoading] = useState(true);
+  const [liveTelemetryError, setLiveTelemetryError] = useState<string | null>(null);
+  const [liveTelemetryConnected, setLiveTelemetryConnected] = useState(false);
+  const liveRequestInFlight = useRef(false);
+  const liveRefreshPending = useRef(false);
+  const liveRefreshWaiters = useRef<Array<() => void>>([]);
+  const livePollingActive = useRef(false);
   const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<{ name: string; role: string } | null>(null);
   const [simulation, setSimulation] = useState<SimulationState>({
@@ -63,6 +79,62 @@ export function BatteryProvider({ children }: { children: ReactNode }) {
     return () => window.clearInterval(id);
   }, []);
 
+  const pollLiveTelemetry = useCallback(async (forceAfterCurrent = false): Promise<void> => {
+    if (!livePollingActive.current) return;
+
+    if (liveRequestInFlight.current) {
+      if (!forceAfterCurrent) return;
+      liveRefreshPending.current = true;
+      return new Promise<void>((resolve) => {
+        liveRefreshWaiters.current.push(resolve);
+      });
+    }
+
+    liveRequestInFlight.current = true;
+    setLiveTelemetryLoading(true);
+
+    try {
+      const reading = await getLatestBatteryReading();
+      if (!livePollingActive.current) return;
+
+      setLiveTelemetry(mapBatteryReadingToTelemetry(reading));
+      setLiveTelemetryError(null);
+      setLiveTelemetryConnected(true);
+    } catch (error) {
+      if (!livePollingActive.current) return;
+
+      setLiveTelemetryError(
+        error instanceof Error ? error.message : "Unable to load live battery telemetry",
+      );
+      setLiveTelemetryConnected(false);
+    } finally {
+      liveRequestInFlight.current = false;
+      if (livePollingActive.current) setLiveTelemetryLoading(false);
+
+      if (liveRefreshPending.current && livePollingActive.current) {
+        liveRefreshPending.current = false;
+        const waiters = liveRefreshWaiters.current.splice(0);
+        void pollLiveTelemetry().finally(() => waiters.forEach((resolve) => resolve()));
+      }
+    }
+  }, []);
+
+  const refreshLiveTelemetry = useCallback(() => pollLiveTelemetry(true), [pollLiveTelemetry]);
+
+  useEffect(() => {
+    livePollingActive.current = true;
+    const refreshWaiters = liveRefreshWaiters.current;
+    void pollLiveTelemetry();
+    const id = window.setInterval(() => void pollLiveTelemetry(), 3000);
+
+    return () => {
+      livePollingActive.current = false;
+      window.clearInterval(id);
+      liveRefreshPending.current = false;
+      refreshWaiters.splice(0).forEach((resolve) => resolve());
+    };
+  }, [pollLiveTelemetry]);
+
   const signIn = useCallback((username: string, password: string) => {
     if (username.trim().toLowerCase() !== "admin" || password !== "admin123") return false;
     const session = { name: "Christy Francis", role: "Technician / Admin" };
@@ -76,14 +148,10 @@ export function BatteryProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const setMode = useCallback(
-    (mode: OperatingMode) => setSimulation((s) => ({ ...s, mode })),
-    [],
-  );
+  const setMode = useCallback((mode: OperatingMode) => setSimulation((s) => ({ ...s, mode })), []);
 
   const toggleDevice = useCallback(
-    (key: keyof Omit<SimulationState, "mode">) =>
-      setSimulation((s) => ({ ...s, [key]: !s[key] })),
+    (key: keyof Omit<SimulationState, "mode">) => setSimulation((s) => ({ ...s, [key]: !s[key] })),
     [],
   );
 
@@ -112,8 +180,36 @@ export function BatteryProvider({ children }: { children: ReactNode }) {
   }, [simulation, tick]);
 
   const value = useMemo(
-    () => ({ snapshot, simulation, setMode, toggleDevice, user, signIn, signOut, authReady }),
-    [snapshot, simulation, setMode, toggleDevice, user, signIn, signOut, authReady],
+    () => ({
+      snapshot,
+      liveTelemetry,
+      liveTelemetryLoading,
+      liveTelemetryError,
+      liveTelemetryConnected,
+      refreshLiveTelemetry,
+      simulation,
+      setMode,
+      toggleDevice,
+      user,
+      signIn,
+      signOut,
+      authReady,
+    }),
+    [
+      snapshot,
+      liveTelemetry,
+      liveTelemetryLoading,
+      liveTelemetryError,
+      liveTelemetryConnected,
+      refreshLiveTelemetry,
+      simulation,
+      setMode,
+      toggleDevice,
+      user,
+      signIn,
+      signOut,
+      authReady,
+    ],
   );
 
   return <BatteryContext.Provider value={value}>{children}</BatteryContext.Provider>;
